@@ -8,6 +8,11 @@ TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 API_URL = "https://api.together.xyz/v1/images/generations"
 
+# Kiểm tra xem token và key có tồn tại không
+if not TOGETHER_API_KEY or not DISCORD_TOKEN:
+    print("Lỗi: Thiếu TOGETHER_API_KEY hoặc DISCORD_TOKEN trong biến môi trường")
+    exit(1)
+
 # Khởi tạo bot
 intents = discord.Intents.default()
 intents.message_content = True
@@ -75,4 +80,9 @@ async def generate(ctx, *, prompt):
         await ctx.send("Không thể tạo ảnh. Vui lòng kiểm tra lại prompt hoặc thử lại sau!")
 
 # Chạy bot
-bot.run(DISCORD_TOKEN)
+try:
+    bot.run(DISCORD_TOKEN)
+except discord.errors.LoginFailure:
+    print("Lỗi: Token Discord không hợp lệ")
+except Exception as e:
+    print(f"Lỗi khi chạy bot: {e}")
